@@ -1,0 +1,58 @@
+#docker-compose -f Wordpress.yml -p wordpress up -d
+#Note:
+#       Download Worpress (cf: ./nginx/html/Readme)
+#       Configure mariadb environment
+#       Nginx will be reachable from outside on port 80
+#php7 is disable
+
+datawordpress: #https://hub.docker.com/_/debian/
+ image: debian
+ volumes:
+  - ./nginx/html/wordpress:/usr/share/nginx/html
+
+mariadb: #https://hub.docker.com/_/mariadb/
+ image: mariadb:latest
+ volumes:
+  - ./mariadb:/var/lib/mysql
+ environment:
+  MYSQL_ROOT_PASSWORD: rootpassword
+  MYSQL_DATABASE: wordpress
+  MYSQL_USER: user
+  MYSQL_PASSWORD: mysqlpassword
+ restart: always
+ expose:
+  - 3306
+
+hhvm: #https://hub.docker.com/r/diegomarangoni/hhvm/
+ image: diegomarangoni/hhvm:fastcgi
+ volumes_from:
+  - datawordpress
+ links:
+  - mariadb:db
+ restart: always
+ expose:
+  - 9000
+
+#php7: #https://hub.docker.com/_/php/
+#  image: php:7-fpm
+#  volumes_from:
+#   - datawordpress
+#  expose:
+#   - 9000
+#  links:
+#    - mariadb:db
+
+nginx: #https://hub.docker.com/_/nginx/
+ image: nginx:latest
+ volumes:
+  - ./logs/nginx:/var/log/nginx
+  - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+ volumes_from:
+  - datawordpress
+ links:
+  - hhvm:enginehhvm
+# - php7:enginephp7
+  - mariadb:db
+ restart: always
+ port:
+  - 80:80

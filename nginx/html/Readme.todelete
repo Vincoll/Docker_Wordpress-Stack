@@ -1,0 +1,11 @@
+
+1/ Download Wordpress :
+  https://wordpress.org/download/
+  $ wget https://wordpress.org/latest.tar.gz
+
+2/ Extract latest.tar.gz
+  $ tar -xzvf latest.tar.gz
+
+3/ Check
+  Install file should be there:
+    ./nginx/html/wordpress/wp-admin/install.php
