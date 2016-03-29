@@ -54,5 +54,5 @@ nginx: #https://hub.docker.com/_/nginx/
 # - php7:enginephp7
   - mariadb:db
  restart: always
- port:
+ ports:
   - 80:80
